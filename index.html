@@ -3,17 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <title>Simon</title>
-    <link rel="stylesheet" href="styles.css" />
+
     <link
       href="https://fonts.googleapis.com/css?family=Press+Start+2P"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
 
   <body>
     <h1 id="level-title">Press A Key to Start</h1>
+
     <div class="container">
-      <div lass="row">
+      <div class="row">
         <div type="button" id="green" class="btn green"></div>
 
         <div type="button" id="red" class="btn red"></div>
@@ -27,5 +29,39 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script type="text/javascript" src="game.js"></script>
+
+    <script>
+      function isMobileDevice() {
+        return (
+          typeof window.orientation !== "undefined" ||
+          navigator.userAgent.indexOf("IEMobile") !== -1
+        );
+      }
+
+      $(document).ready(function () {
+        if (isMobileDevice()) {
+          $("#level-title").text("Tap anywhere to start");
+        } else {
+          $("#level-title").text("Press A Key to Start");
+        }
+      });
+
+      $(document).on("keypress touchstart", function () {
+        if (!started) {
+          started = true;
+          console.log("Game started.");
+          nextSequence();
+        } else {
+          if (
+            $("#level-title").text() ===
+              "Game Over, Press Any Key to Restart" ||
+            $("#level-title").text() === "Game Over, Tap anywhere to restart"
+          ) {
+            startOver();
+            nextSequence();
+          }
+        }
+      });
+    </script>
   </body>
 </html>

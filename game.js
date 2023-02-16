@@ -4,6 +4,18 @@ var buttonColours = ["red", "blue", "green", "yellow"];
 var level = 0;
 var started = false;
 
+if (typeof window !== "undefined" && window.HTMLAudioElement) {
+  var audioEl = new Audio();
+  audioEl
+    .play()
+    .then(function () {
+      audioEl = null;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
 var blue = new Audio("sounds/blue.mp3");
 var green = new Audio("sounds/green.mp3");
 var red = new Audio("sounds/red.mp3");
@@ -45,7 +57,11 @@ function checkAnswer(currentLevel) {
     }
   } else {
     console.log("wrong");
-    $("#level-title").text("Game Over, Press Any Key to Restart");
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      $("#level-title").text("Game Over, Tap Anywhere to Restart");
+    } else {
+      $("#level-title").text("Game Over, Press Any Key to Restart");
+    }
     playSound("wrong");
     $("body").addClass("game-over");
     setTimeout(function () {
@@ -94,6 +110,19 @@ function startOver() {
 }
 
 $(document).keypress(function () {
+  if (!started) {
+    started = true;
+    console.log("Game started.");
+    nextSequence();
+  } else {
+    if ($("#level-title").text() === "Game Over, Press Any Key to Restart") {
+      startOver();
+      nextSequence();
+    }
+  }
+});
+
+$(document).on("touchstart", function () {
   if (!started) {
     started = true;
     console.log("Game started.");
